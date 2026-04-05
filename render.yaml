@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: rift-flame
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+      - key: PORT
+        value: 3000
+    env: starter
+    region: ohio
+    plan: free
+    healthCheckPath: /api/reports
+    autoDeploy: true
