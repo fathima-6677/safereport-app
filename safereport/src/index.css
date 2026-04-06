@@ -3,25 +3,29 @@
 @tailwind utilities;
 
 :root {
-  /* iOS Safe Area Support */
-  --sat: env(safe-area-inset-top);
-  --sab: env(safe-area-inset-bottom);
-  --sar: env(safe-area-inset-right);
-  --sal: env(safe-area-inset-left);
+  /* Dynamic Layout Variables */
+  --header-offset: calc(4rem + env(safe-area-inset-top));
+  --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-offset: 0px;
+    --safe-area-bottom: 0px;
+  }
 }
 
 /* ── Base resets ── */
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; padding: 0; 
-  -webkit-tap-highlight-color: transparent; /* No gray box on tap for iOS */
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body, #root { 
   height: 100%; 
-  overflow: hidden; 
-  position: fixed; /* Prevent accidental bounce scroll on iOS body */
   width: 100%;
+  overflow: hidden; 
 }
 body {
   background: #0a0c10;

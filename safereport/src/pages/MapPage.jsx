@@ -43,8 +43,8 @@ export default function MapPage() {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Header - Height handled by Layout.jsx */}
-      <div className="px-4 lg:px-7 pt-2 lg:pt-5 pb-4 border-b border-brd flex-shrink-0 bg-bg">
+      {/* Header - spacing depends on Layout offset */}
+      <div className="px-4 lg:px-7 pt-4 lg:pt-8 pb-4 border-b border-brd flex-shrink-0 bg-bg">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5 lg:mb-6">
           <div>
             <h1 className="font-serif text-[22px] lg:text-[26px] text-txt mb-1">Safety Map</h1>

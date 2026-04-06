@@ -12,7 +12,7 @@ export default function Layout() {
     <div className="flex h-screen bg-bg overflow-hidden relative selection:bg-accent/30">
       {/* Mobile Header - with safe area inset for notch support */}
       <div 
-        style={{ paddingTop: 'var(--sat, 0px)', height: 'calc(4rem + var(--sat, 0px))' }}
+        style={{ paddingTop: 'env(safe-area-inset-top)', height: 'var(--header-offset)' }}
         className="lg:hidden fixed top-0 left-0 right-0 glass z-30 border-b border-white/5 flex items-center justify-between px-6 transition-all duration-300"
       >
         <div className="flex items-center gap-3">
@@ -60,13 +60,12 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* Main Content - respects top and bottom safe areas */}
       <main 
         style={{ 
-          paddingTop: 'calc(var(--sat, 0px) + 4rem)',
-          paddingBottom: 'var(--sab, 0px)'
+          paddingTop: 'var(--header-offset)',
+          paddingBottom: 'var(--safe-area-bottom)'
         }}
-        className="flex-1 min-w-0 overflow-hidden flex flex-col lg:pt-0 lg:pb-0"
+        className="flex-1 min-w-0 overflow-hidden flex flex-col"
       >
         <Outlet />
       </main>

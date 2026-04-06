@@ -31,8 +31,8 @@ export default function ReportPage() {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Header - Height handled by Layout.jsx */}
-      <div className="px-4 lg:px-7 pt-1 lg:pt-5 pb-4 border-b border-brd flex-shrink-0 bg-bg">
+      {/* Header - spacing depends on Layout offset */}
+      <div className="px-4 lg:px-7 pt-4 lg:pt-8 pb-4 border-b border-brd flex-shrink-0 bg-bg">
         <h1 className="font-serif text-[20px] lg:text-[22px] text-txt font-semibold">Report an Incident</h1>
         <p className="text-[11px] lg:text-[12px] text-txt-3 mt-0.5">Your identity is never stored or logged</p>
       </div>
