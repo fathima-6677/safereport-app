@@ -1,0 +1,34 @@
+{
+  "short_name": "Rift Flame",
+  "name": "Rift Flame — Anonymous Incident Reporting",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0c10",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#0a0c10",
+  "description": "Report safety concerns without revealing your identity. Community-powered anonymous reporting and mapping.",
+  "orientation": "portrait",
+  "categories": ["safety", "utilities", "community"],
+  "shortcuts": [
+    {
+      "name": "Report Incident",
+      "short_name": "Report",
+      "url": "/report",
+      "description": "Submit a quick anonymous report"
+    },
+    {
+      "name": "View Safety Map",
+      "short_name": "Map",
+      "url": "/",
+      "description": "View live incident heatmap"
+    }
+  ]
+}

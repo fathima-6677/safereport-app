@@ -2,9 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* iOS Safe Area Support */
+  --sat: env(safe-area-inset-top);
+  --sab: env(safe-area-inset-bottom);
+  --sar: env(safe-area-inset-right);
+  --sal: env(safe-area-inset-left);
+}
+
 /* ── Base resets ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #root { height: 100%; overflow: hidden; }
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; padding: 0; 
+  -webkit-tap-highlight-color: transparent; /* No gray box on tap for iOS */
+}
+
+html, body, #root { 
+  height: 100%; 
+  overflow: hidden; 
+  position: fixed; /* Prevent accidental bounce scroll on iOS body */
+  width: 100%;
+}
 body {
   background: #0a0c10;
   color: #e8eaf0;

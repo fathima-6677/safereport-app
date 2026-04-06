@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { IconShield, IconHospital } from './Icons';
+import { IconShield } from './Icons';
+import { calculateSafetyScore } from '../utils/hotspot';
+import { useReports } from '../hooks/useReports';
 
 export default function SafetyScore({ onScoreResult }) {
+  const { reports } = useReports();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -23,12 +26,22 @@ export default function SafetyScore({ onScoreResult }) {
       if (!data.length) throw new Error('Location not found');
       
       const { lat, lon, display_name } = data[0];
+      const targetLat = parseFloat(lat);
+      const targetLng = parseFloat(lon);
       
-      // 2. Get score from our backend
-      const scoreRes = await fetch(`/api/score?lat=${lat}&lng=${lon}`);
-      const scoreData = await scoreRes.json();
+      let scoreData;
+      try {
+        // 2. Try Score from our backend
+        const scoreRes = await fetch(`/api/score?lat=${targetLat}&lng=${targetLng}`);
+        if (!scoreRes.ok) throw new Error('API failed');
+        scoreData = await scoreRes.json();
+      } catch (err) {
+        // 3. Fallback to Local Calculation
+        console.warn('Backend score API failed, calculating locally...');
+        scoreData = calculateSafetyScore(targetLat, targetLng, reports);
+      }
       
-      const resData = { ...scoreData, lat: parseFloat(lat), lng: parseFloat(lon), address: display_name };
+      const resData = { ...scoreData, lat: targetLat, lng: targetLng, address: display_name };
       setResult(resData);
       onScoreResult?.(resData);
     } catch (err) {
@@ -62,19 +75,21 @@ export default function SafetyScore({ onScoreResult }) {
       {result && (
         <div className="glass-card p-5 rounded-card border-l-4 border-l-accent fade-up">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="text-[14px] font-bold text-txt mb-1">{result.address.split(',')[0]}</div>
-              <div className="flex items-center gap-2">
-                <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+            <div className="flex-1 mr-4">
+              <div className="text-[14px] font-bold text-txt mb-1 truncate max-w-[200px]" title={result.address}>
+                {result.address.split(',')[0]}
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
                   result.color === 'green' ? 'bg-success/10 text-success border-success/20' : 
                   result.color === 'amber' ? 'bg-warn/10 text-warn border-warn/20' : 'bg-danger/10 text-danger border-danger/20'
                 }`}>
                   {result.label}
                 </span>
-                <span className="text-[11px] text-txt-3">{result.nearbyIncidents} incidents within 500m</span>
+                <span className="text-[10px] text-txt-3">{result.nearbyIncidents} incidents within 500m</span>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-right flex-shrink-0">
               <div className="text-[28px] font-serif font-black text-txt leading-none">{result.score}</div>
               <div className="text-[10px] text-txt-3 font-bold uppercase tracking-tighter">Safety Index</div>
             </div>
@@ -98,3 +113,4 @@ export default function SafetyScore({ onScoreResult }) {
     </div>
   );
 }
+

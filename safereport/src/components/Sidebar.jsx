@@ -84,11 +84,11 @@ const navItems = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onMobileNavigate }) {
   return (
-    <aside className="w-[240px] min-w-[240px] glass border-r border-white/5 flex flex-col z-10 shadow-2xl">
+    <aside className="w-full h-full glass border-r border-white/5 flex flex-col z-10 shadow-2xl">
       {/* Brand */}
-      <div className="px-6 pt-6 pb-6 border-b border-white/5">
+      <div className="px-6 pt-6 pb-6 border-b border-white/5 hidden lg:block">
         <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-2 rounded-xl flex items-center justify-center mb-3 shadow-lg shadow-accent/30 animate-pulse-slow">
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
             <path d="M12 2c0 0-4.5 4-4.5 8.5C7.5 13.5 9.5 17 12 22c2.5-5 4.5-8.5 4.5-11.5C16.5 6 12 2 12 2z"/>
@@ -104,7 +104,10 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 overflow-y-auto custom-scrollbar">
+      <nav 
+        style={{ paddingTop: 'calc(var(--sat, 0px) + 5rem)' }}
+        className="flex-1 p-3 overflow-y-auto custom-scrollbar lg:pt-3"
+      >
         {navItems.map((group) => (
           <div key={group.section} className="mb-8 last:mb-0">
             <div className="text-[10px] font-black text-txt-3 tracking-widest uppercase px-3 mb-3 opacity-40">
@@ -115,6 +118,7 @@ export default function Sidebar() {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
+                onClick={onMobileNavigate}
                 className={({ isActive }) =>
                   `flex items-center gap-3.5 px-3 py-3 rounded-xl text-[13px] mb-1.5 transition-all duration-300
                   ${isActive
@@ -136,11 +140,10 @@ export default function Sidebar() {
           </div>
         ))}
         
-        <div className="mt-4 pt-6 border-t border-white/5">
+        <div className="mt-4 pt-6 border-t border-white/5 mb-6">
           <SafetyTimer />
         </div>
       </nav>
-
 
       {/* Footer */}
       <div className="px-4 py-3.5 border-t border-white/5 text-[10px] text-txt-3 font-medium">
@@ -150,3 +153,4 @@ export default function Sidebar() {
     </aside>
   );
 }
+

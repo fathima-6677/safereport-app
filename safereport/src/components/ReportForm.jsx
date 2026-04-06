@@ -204,8 +204,8 @@ export default function ReportForm({ onSubmit, submitting }) {
           No account needed. No IP address logged. Reports are assigned a random ID only — nothing links back to you.
         </div>
 
-        <div className="bg-bg-2 border border-brd rounded-card p-6">
-          <div className="font-serif text-[16px] text-txt mb-5 flex items-center gap-2">
+        <div className="bg-bg-2 border border-brd rounded-card p-4 lg:p-6 shadow-xl">
+          <div className="font-serif text-[15px] lg:text-[16px] text-txt mb-4 lg:mb-5 flex items-center gap-2">
             <svg className="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
@@ -320,8 +320,8 @@ export default function ReportForm({ onSubmit, submitting }) {
 
       {/* Right — Location picker */}
       <div>
-        <div className="bg-bg-2 border border-brd rounded-card p-6">
-          <div className="font-serif text-[16px] text-txt mb-4 flex items-center gap-2">
+        <div className="bg-bg-2 border border-brd rounded-card p-4 lg:p-6 shadow-xl">
+          <div className="font-serif text-[15px] lg:text-[16px] text-txt mb-4 flex items-center gap-2">
             <svg className="w-4 h-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>

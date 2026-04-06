@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { IconClock, IconAlert, IconShield } from './Icons';
+import React, { useState } from 'react';
+import { IconClock, IconShield } from './Icons';
+import { useTimer } from '../hooks/useTimer';
 
 const TIMER_PRESETS = [
   { label: 'Short Walk', mins: 5 },
@@ -9,84 +10,29 @@ const TIMER_PRESETS = [
 ];
 
 export default function SafetyTimer() {
-  const [isActive, setIsActive] = useState(false);
-  const [expiresAt, setExpiresAt] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [sessionId] = useState(() => localStorage.getItem('timerSessionId') || `timer_${Math.random().toString(36).slice(2, 9)}`);
+  const { isActive, timeLeft, startTimer, stopTimer } = useTimer();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem('timerSessionId', sessionId);
-  }, [sessionId]);
+  const startWithLocation = async (mins) => {
+    setLoading(true);
+    let location = { lat: 13.0418, lng: 80.2341, area: 'T. Nagar' }; // Default
 
-  const fetchStatus = useCallback(async () => {
+    // Try Geo-location
     try {
-      const res = await fetch(`/api/timer/status/${sessionId}`);
-      const data = await res.json();
-      if (data.active) {
-        setIsActive(true);
-        setExpiresAt(data.expiresAt);
-      }
-    } catch (err) {
-      console.error('Timer status check failed:', err);
-    }
-  }, [sessionId]);
-
-  useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
-
-  useEffect(() => {
-    if (!isActive || !expiresAt) return;
-
-    const interval = setInterval(() => {
-      const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
-      setTimeLeft(remaining);
-
-      if (remaining === 0) {
-        setIsActive(false);
-        // Server will auto-trigger SOS
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isActive, expiresAt]);
-
-  const startTimer = async (mins) => {
-    try {
-      const res = await fetch('/api/timer/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          durationMinutes: mins,
-          // In a real app, we'd pass user's current GPS here
-          lat: 13.0418, 
-          lng: 80.2341,
-          area: 'T. Nagar'
-        })
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
       });
-      const data = await res.json();
-      if (data.success) {
-        setIsActive(true);
-        setExpiresAt(data.expiresAt);
-      }
-    } catch (err) {
-      alert('Failed to start safety timer.');
+      location = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        area: 'My Location',
+      };
+    } catch {
+      console.warn('Geolocation denied, using default.');
     }
-  };
 
-  const stopTimer = async () => {
-    try {
-      await fetch('/api/timer/stop', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId })
-      });
-      setIsActive(false);
-      setExpiresAt(null);
-    } catch (err) {
-      console.error('Stop timer failed:', err);
-    }
+    await startTimer(mins, location);
+    setLoading(false);
   };
 
   const formatTime = (seconds) => {
@@ -131,16 +77,18 @@ export default function SafetyTimer() {
         {TIMER_PRESETS.map((p) => (
           <button
             key={p.mins}
-            onClick={() => startTimer(p.mins)}
-            className="px-2 py-2 bg-white/5 text-txt-2 border border-white/5 rounded-btn text-[11px] font-medium hover:bg-white/10 hover:text-txt transition"
+            disabled={loading}
+            onClick={() => startWithLocation(p.mins)}
+            className="px-2 py-2 bg-white/5 text-txt-2 border border-white/5 rounded-btn text-[11px] font-medium hover:bg-white/10 hover:text-txt transition disabled:opacity-50"
           >
             {p.label} ({p.mins}m)
           </button>
         ))}
       </div>
       <p className="text-[10px] text-txt-3 italic font-medium">
-        Set a timer whenever walking alone. If it runs out, server-side SOS is triggered.
+        Set a timer when walking alone. If it runs out, server-side/local SOS is triggered.
       </p>
     </div>
   );
 }
+

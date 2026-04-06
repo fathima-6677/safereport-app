@@ -157,3 +157,57 @@ export function resetData() {
   ensureSeeded();
   return getAll();
 }
+
+/**
+ * TIMER & SESSION HELPERS
+ */
+const TIMER_KEY = 'safereport_timer_session';
+
+export function getTimerSession() {
+  try {
+    const raw = localStorage.getItem(TIMER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveTimerSession(session) {
+  localStorage.setItem(TIMER_KEY, JSON.stringify(session));
+}
+
+export function clearTimerSession() {
+  localStorage.removeItem(TIMER_KEY);
+}
+
+/**
+ * Trigger an emergency SOS report locally when a timer expires.
+ */
+export function triggerTimerEmergency(session) {
+  const reports = getAll();
+  const id = `timer_sos_${Date.now()}`;
+  const referenceId = '#T-' + Math.random().toString(16).slice(2, 5).toUpperCase();
+  
+  const newReport = {
+    id,
+    referenceId,
+    incidentType: 'Timer Expired — Emergency SOS',
+    severity: 'high',
+    location: {
+      lat: session.lat || 13.0827,
+      lng: session.lng || 80.2707,
+      area: session.area || 'Unknown (Timer Location)',
+    },
+    timeOfDay: 'Emergency (Auto)',
+    description: `CRITICAL: Safety timer for session ${session.sessionId} expired without check-in. Automatic SOS triggered.`,
+    status: 'new',
+    flagged: true,
+    createdAt: Date.now()
+  };
+  
+  reports.unshift(newReport);
+  saveAll(reports);
+  clearTimerSession();
+  return newReport;
+}
+
