@@ -42,7 +42,7 @@ export default function Layout() {
 
       {/* Sidebar Overlay - optimized for touch */}
       <div className={`
-        fixed inset-0 z-40 lg:relative lg:z-10 lg:block transition-all duration-300
+        fixed inset-0 z-40 lg:relative lg:z-10 lg:block lg:w-[240px] lg:flex-shrink-0 transition-all duration-300
         ${isMobileMenuOpen ? 'visible' : 'invisible lg:visible'}
       `}>
         {/* Backdrop */}
